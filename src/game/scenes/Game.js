@@ -12,9 +12,14 @@ const msgs = [
     the buttered toast, she stared out the window. The sky was just as grey
     as it was when she had woken. "Wouldn't it be nice if it stays this way
     the whole day?", she thought. It would feel as if time stood still`,
+    // `And so it was, with that thought bringing Jamie deep in reverie, when she jolted
+    // from it, recalling that she had agreed to a late morning tutoring session for
+    // a group of her students. Luckily, there's still a good hour to go. She got dressed
+    // and ready to head to the school where she usually teaches.`,
 ];
 const states = [
-    "Intro",
+    "Intro_1",
+    "Intro_2",
     "School",
     "Meet friend",
     "See grandma",
@@ -48,19 +53,23 @@ export class Game extends Scene
         const storeTiles = map.addTilesetImage('5_Floor_Modular_Buildings_32x32', 'base_tiles_1');
         const buildingTiles = map.addTilesetImage('7_Villas_32x32', 'base_tiles_2');
         const schoolTiles = map.addTilesetImage('13_School_32x32', 'base_tiles_6');
-        const shopTiles = map.addTilesetImage('9_Shopping_Center_and_Markets_32x3', 'base_tiles_3');
+        const shopTiles = map.addTilesetImage('9_Shopping_Center_and_Markets_32x32', 'base_tiles_3');
         const shopCartTiles = map.addTilesetImage('10_Vehicles_32x32', 'base_tiles_4');
 
         const floorLayer = map.createLayer('Floor', [terrainTiles, campTiles]);
         const floorDecoLayer = map.createLayer('Ground Objects', [terrainTiles, campTiles, schoolTiles, shopCartTiles, buildingTiles]);
         const buildingLayer = map.createLayer('Buildings', [storeTiles, shopTiles, campTiles, buildingTiles]);
-        const skyLayer = map.createLayer('Sky objects', [buildingTiles, storeTiles, shopTiles]);
+        const skyLayer = map.createLayer('Sky objects', [campTiles, buildingTiles, storeTiles, shopTiles]);
 
-        floorLayer.setCollisionByProperty({collides: true});
+        // floorLayer.setCollisionByProperty({collides: true});
         floorDecoLayer.setCollisionByProperty({collides: true});
         buildingLayer.setCollisionByProperty({collides: true});
 
-        const spawnPoint = map.findObject('Characters', (obj) => obj.name === "Spawn Point");
+        const spawnPoint = map.findObject('Obj Layer', (obj) => obj.name === "Spawn Point");
+        const objs = map.createFromObjects('Obj Layer', {id: 5});
+        this.school = objs[0];
+        this.school.postFX.addGlow(0.1, 32);
+        this.school.addCircle();
 
         this.player = this.physics.add.sprite(spawnPoint.x, spawnPoint.y, 'walk');
         this.player.setCollideWorldBounds(true);
@@ -153,7 +162,7 @@ export class Game extends Scene
     runStateMachine ()
     {
         switch(states[this.idx]) {
-            case 'Intro':
+            case 'Intro_1':
                 console.log(`Entered, idx: ${this.idx}`);
                 let dialogProp = {
                     msg: msgs[this.idx],

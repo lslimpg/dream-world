@@ -24,7 +24,7 @@ function DialogBox({msg, width, height, callback}) {
             }}>
                 <CardContent sx={{ height: '75%', overflowY :'scroll', display: "flex",
                     flexGrow:'1', flexDirection:'column'}}>
-                <Message msg={msg} delay={5} callback={onSetClose}></Message>
+                <Message msg={msg} delay={0} callback={onSetClose}></Message>
                 {showClose && <Button onClick={() => {
                     setClose(false); callback()}}>Ok</Button>}
                 </CardContent>

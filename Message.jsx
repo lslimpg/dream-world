@@ -22,3 +22,4 @@ function Message({msg, delay, callback}) {
 }
 
 export default React.memo(Message);
+// export default Message;
