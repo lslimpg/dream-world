@@ -11,10 +11,6 @@ export const PhaserGame = forwardRef(function PhaserGame ({ currentActiveScene }
     const [showDialog, setShowDialog] = useState(false);
     const [dialogContent, setDialogContent] = useState(null);
 
-    function onCloseDialog() {
-        setShowDialog(false);
-    }
-
     // Create the game inside a useLayoutEffect hook to avoid the game being created outside the DOM
     useLayoutEffect(() => {
         
@@ -55,7 +51,10 @@ export const PhaserGame = forwardRef(function PhaserGame ({ currentActiveScene }
         });
         EventBus.on('show-dialog', ((currentScene, props) => {
             console.log(props);
-            props = {...props, callback: onCloseDialog}
+            props = {...props, callback: () => {
+                setShowDialog(false);
+                currentScene.runStateMachine();
+            }}
             setDialogContent(props);
             setShowDialog(true);
         }))
@@ -71,7 +70,7 @@ export const PhaserGame = forwardRef(function PhaserGame ({ currentActiveScene }
     return (
         <>
             <div id="game-container">
-            {console.log(showDialog)}
+            {/* {console.log(showDialog)} */}
             {showDialog && <DialogBox {...dialogContent} ></DialogBox>}
             </div>
         </>

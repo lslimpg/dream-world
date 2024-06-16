@@ -3,12 +3,14 @@ import Card from '@mui/material/Card';
 import Button from '@mui/material/Button';
 import Message from "../Message";
 import { CardContent, Dialog } from "@mui/material";
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 
-function DialogBox({msg, width, height, callback}) {
-    const [showClose, setClose] = useState(false);
-    function onSetClose() {
-        setClose(true);
-    }
+function DialogBox({msgs, width, height, callback}) {
+    const numMsgs = msgs.length;
+    const [msgIdx, setMsgIdx] = useState(0);
+    const [isLast, setIsLast] = useState(numMsgs == 1);
+    const [showCursor, setShowCursor] = useState(false);
+
     return (
         <Card sx={{
                 backgroundImage: "url('../assets/dialog_box.png')",
@@ -24,9 +26,14 @@ function DialogBox({msg, width, height, callback}) {
             }}>
                 <CardContent sx={{ height: '75%', overflowY :'scroll', display: "flex",
                     flexGrow:'1', flexDirection:'column'}}>
-                <Message msg={msg} delay={0} callback={onSetClose}></Message>
-                {showClose && <Button onClick={() => {
-                    setClose(false); callback()}}>Ok</Button>}
+                <Message key={msgIdx} msg={msgs[msgIdx]} delay={5} callback={() => {setShowCursor(true)}}></Message>
+                {isLast && <Button onClick={callback}>Ok</Button>}
+                {!isLast && showCursor && <NavigateNextIcon onClick = {() => {
+                    setShowCursor(false);
+                    setIsLast((msgIdx+1) === (numMsgs - 1));
+                    setMsgIdx(msgIdx + 1);            
+                    }}>
+                    </NavigateNextIcon> }
                 </CardContent>
         </Card>
     )
