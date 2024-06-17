@@ -19,12 +19,10 @@ function Message({msg, delay, callback}) {
             clearTimeout(timeout);
         }
     }, [text, msg, idx])
-    // useEffect(() => callback(), []);
 
     return (
         <div style={{fontSize: '1.2em'}}>{text}</div>
     )
 }
 
-// export default React.memo(Message);
 export default Message;

@@ -13,25 +13,79 @@ const states = [
             She proceeded to get dressed, and make herself breakfast, which consisted of
             coffee, and toast with butter. As she sat, sipping the coffee and savouring
             the buttered toast, she stared out the window. The sky was just as grey
-            as it was when she had woken. "Wouldn't it be nice if it stays this way
-            the whole day?", she thought. It would feel as if time stood still`,
-            `And so it was, with that thought bringing Jamie deep in reverie, when she jolted
-            from it, recalling that she had agreed to a late morning tutoring session for
-            a group of her students. Luckily, there's still a good hour to go. She got dressed
-            and ready to head to the school where she usually teaches.`
+            as it was when she had woken. "Wouldn't it be nice if it stays this way?",
+            she thought. It would feel as if time stood still.`,
+            `And so it was, with that thought bringing Jamie deep in reverie, when she  
+            jolted from it, recalling that she had agreed to a late morning tutoring session
+            for a group of her students. Luckily, there's still a good hour to go. She got 
+            dressed and ready to head to the school where she usually teaches.`
         ]
     },
     {
         key: 'School',
     },
     {
+        key: 'Afternoon Delight',
+        msgs: [
+            `It was a fruitful two hours of tutoring, particularly because one of Jamie's
+            students finally had a breakthrough with understanding a tricky concept he
+            had been struggling all week with. Jubilant, Jamie looked at her watch. It
+            was only 1 pm. She still had an hour and a half before her planned meetup
+            with Robin.`,
+            `The skies had parted while she was inside, and now, a warm yellow glow suffused
+            the town's landscape, lending a particular carefree mood to the air around it.
+            Feeling light and airy, Jamie decided to while away the time at a brook in the
+            woods, and made the trek there with a flask of hot coffee, a book in hand.`
+        ]
+    },
+    {
         key: 'Meet Friend',
+        msgs: [
+            `It's coming to 3.30 in the afternoon. Jamie gathered her belongings and made
+            her way to the town's market, where she and Robin had planned to meet.`,
+        ]
+    },
+    {
+        key: 'Baking Session',
+        msgs: [
+            `After getting the ingredients they needed, Jamie and Robin headed back to
+            Jamie's home. This afternoon, they had planned to bake curry puffs, and a big
+            batch of it to share around.`
+        ]
     },
     {
         key: 'See Grandma',
+        msgs: [
+            `It was a pleasant baking session. Jamie and Robin took turns preparing the ingredients,
+            chopping the onions, seasoning the meat, and cooking the filling. Then, they sat at 
+            the roundtable chatting and catching up with each other, while kneading the butter dough,
+            and wrapping the filling with it`,
+            `At the end, Jamie's house was full with the aroma of baked curry puffs.`,
+            `Having distributed some to Jamie's neighbours, Jamie and Robin got ready to head over
+            to have dinner with Jamie's grannie.`
+        ]
     },
     {
-        key: 'End'
+        key: 'Dinner at Grandma\'s',
+        msgs: [
+            `Jamie's grandma, still sprightly, with an ever present hint of a smile, welcomed them in.
+            "It's fish porridge tonight, dearies!", she said. "But I've made spicy ground chicken for
+            you", she added, as she smiled knowingly at Robin. "Jamie told me you are visiting today,
+            and I know you are just ok with porridge".`,
+            `After dinner, and when the dishes were done, it's close to 9 pm. Jamie, Robin and Grandma 
+            gathered in the living room. It was a chilly evening, and Jamie felt like having stout, so
+            she opened a bottle. Robin and Grandma opted for hot herbal tea. Together, they drank and
+            munched curry puffs, while filling each other up on the town's gossip.`
+        ]
+    },
+    {
+        key: 'End',
+        msgs: [
+            `It was 10.30 pm. Robin prepared to leave and make her way back to the other side of town. 
+            After bidding goodnight to my grandma, I headed home myself, and as I pulled the bed covers 
+            over, I reflected over the many simple pleasures today, and thought that it was as perfect
+            as it can be.`
+        ]
     }
 ]
 
@@ -52,10 +106,6 @@ export class Game extends Scene
 
     create ()
     {
-        // console.log(this.sys.game.canvas)
-        // console.log(`Width: ${width}, height: ${height}`);
-        // console.log(style);
-
         this.map = this.make.tilemap({ key: 'tilemap' });
         const terrainTiles = this.map.addTilesetImage('1_Terrains_and_Fences_32x32', 'base_tiles_0');
         const campTiles = this.map.addTilesetImage('11_Camping_32x32', 'base_tiles_5');
@@ -73,6 +123,8 @@ export class Game extends Scene
         // floorLayer.setCollisionByProperty({collides: true});
         floorDecoLayer.setCollisionByProperty({collides: true});
         buildingLayer.setCollisionByProperty({collides: true});
+
+        this.objLayer = this.map.getObjectLayer('Obj Layer');
 
         const spawnPoint = this.map.findObject('Obj Layer', (obj) => obj.name === "Spawn Point")
 
@@ -169,42 +221,74 @@ export class Game extends Scene
         console.log(`SM idx: ${this.idx}`);
         switch(states[this.idx].key) {
             case 'Intro':
-                let dialogProp = {
-                    msgs: states[this.idx].msgs,
-                    width: this.dialogConfig.width,
-                    height: this.dialogConfig.height
-                }
-                this.idx = Math.min(this.idx + 1, states.length - 1);
-                EventBus.emit('show-dialog', this, dialogProp);
+            case 'Afternoon Delight':
+            case 'Dinner at Grandma\'s':
+            case 'End':
+                this.displayMessage(this.idx);
                 break;
             case 'School':
-                const objLayer = this.map.getObjectLayer('Obj Layer');
-                objLayer.objects.forEach((e) => {
-                    if (e.name === 'School') {
-                        console.log(e.polygon);
-                        const points = e.polygon.map(({x, y}) => ([x, y])).flat();
-                        console.log(points);
-                        this.schoolHighlight = this.add.polygon(e.x, e.y, points).setOrigin(0, 0);
-                        this.schoolHighlight.setStrokeStyle(4, 0xefc53f);
-                        this.schoolHighlight.postFX.addGlow(0xffff00, 8, 0, true, 0.05, 24);
-                    }
-                })
-                this.tweens.add({
-                    targets: this.schoolHighlight,
-                    scaleX: 0.9,
-                    scaleY: 0.9,
-                    yoyo: true,
-                    repeat: -1,
-                    ease: 'sine.inout'
-                });
-                this.physics.add.collider(this.player, this.schoolHighlight, () => {console.log("Collide!")});
-                this.idx = Math.min(this.idx + 1, states.length - 1);
+                this.displayGlow('School', this.runStateMachine);
+                break;
+            case 'Meet Friend':
+                this.displayGlow('Market');
+                this.displayMessage(this.idx);
+                break;
+            case 'Baking Session':
+                this.displayGlow('Home');
+                this.displayMessage(this.idx);
+                break;
+            case 'See Grandma':
+                this.displayGlow('Grandma');
+                this.displayMessage(this.idx);
+                break;
+            default:
+                console.log('Unexpected');
                 break;
         }
+        this.idx = Math.min(this.idx + 1, states.length - 1);
     }
 
     changeScene ()
     {
         this.scene.start('GameOver');
+    }
+
+    displayMessage(idx)
+    {
+        let dialogProp = {
+            msgs: states[idx].msgs,
+            width: this.dialogConfig.width,
+            height: this.dialogConfig.height
+        }
+        EventBus.emit('show-dialog', this, dialogProp);
+    }
+
+    displayGlow(objName, runNextState)
+    {
+        let glow;
+        this.objLayer.objects.forEach((e) => {
+            if (e.name === objName) {
+                // console.log(e.polygon);
+                const points = e.polygon.map(({x, y}) => ([x, y])).flat();
+                // console.log(points);
+                glow = this.add.polygon(e.x, e.y, points).setOrigin(0, 0);
+                glow.setStrokeStyle(4, 0xefc53f);
+                glow.postFX.addGlow(0xffff00, 8, 0, true, 0.05, 24);
+            }
+        })
+        this.tweens.add({
+            targets: glow,
+            scaleX: 0.9,
+            scaleY: 0.9,
+            yoyo: true,
+            repeat: -1,
+            ease: 'sine.inout'
+        });
+        this.physics.add.existing(glow);
+        glow.body.setImmovable(true);
+        this.physics.add.collider(this.player, glow, () => {
+            glow.destroy();
+            runNextState && this.runStateMachine();
+        });
     }
 }
