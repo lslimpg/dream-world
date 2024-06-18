@@ -44,16 +44,15 @@ export const PhaserGame = forwardRef(function PhaserGame ({ currentActiveScene }
                 currentActiveScene(currentScene);
             }
             ref.current.scene = currentScene;
-            console.log(typeof currentScene.runStateMachine);
-            if (typeof currentScene.runStateMachine !== 'undefined')
-                    currentScene.runStateMachine();
+            if (currentScene.scene.key === 'Game')
+                EventBus.emit('phaser-jsx-done');
             
         });
         EventBus.on('show-dialog', ((currentScene, props) => {
             console.log(props);
             props = {...props, callback: () => {
                 setShowDialog(false);
-                currentScene.runStateMachine();
+                EventBus.emit('phaser-jsx-done');
             }}
             setDialogContent(props);
             setShowDialog(true);
@@ -70,7 +69,6 @@ export const PhaserGame = forwardRef(function PhaserGame ({ currentActiveScene }
     return (
         <>
             <div id="game-container">
-            {/* {console.log(showDialog)} */}
             {showDialog && <DialogBox {...dialogContent} ></DialogBox>}
             </div>
         </>

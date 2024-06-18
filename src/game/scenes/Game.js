@@ -82,9 +82,9 @@ const states = [
         key: 'End',
         msgs: [
             `It was 10.30 pm. Robin prepared to leave and make her way back to the other side of town. 
-            After bidding goodnight to my grandma, I headed home myself, and as I pulled the bed covers 
-            over, I reflected over the many simple pleasures today, and thought that it was as perfect
-            as it can be.`
+            After bidding goodnight to her grandma, Jamie headed home herself, and as she pulled the bed 
+            covers over, she reflected over the many simple pleasures today, and thought that it was as 
+            perfect as it can be.`
         ]
     }
 ]
@@ -98,6 +98,7 @@ export class Game extends Scene
 {
     idx = 0;
     dialogConfig;
+    dependencies = 1;
 
     constructor ()
     {
@@ -117,7 +118,7 @@ export class Game extends Scene
 
         const floorLayer = this.map.createLayer('Floor', [terrainTiles, campTiles]);
         const floorDecoLayer = this.map.createLayer('Ground Objects', [terrainTiles, campTiles, schoolTiles, shopCartTiles, buildingTiles]);
-        const buildingLayer = this.map.createLayer('Buildings', [storeTiles, shopTiles, campTiles, buildingTiles]);
+        const buildingLayer = this.map.createLayer('Buildings', [storeTiles, shopTiles, campTiles, buildingTiles, schoolTiles]);
         const skyLayer = this.map.createLayer('Sky objects', [campTiles, buildingTiles, storeTiles, shopTiles]);
 
         // floorLayer.setCollisionByProperty({collides: true});
@@ -181,13 +182,20 @@ export class Game extends Scene
 
         this.cursors = this.input.keyboard.createCursorKeys();
 
-        // Constrain the camera so that it isn't allowed to move outside the width/height of tilethis.map
+        // Constrain the camera so that it isn't allowed to move outside the width/height of tilemap
         this.cameras.main.startFollow(this.player);
         this.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels, true);
         this.physics.world.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
 
         this.dialogConfig = pickWidthHeight(this.game.config);
 
+        this.minimap = this.cameras.add(
+            this.dialogConfig.width - 200, 0, 400, 400)
+            .setOrigin(0, 0)
+            .setZoom(0.1)
+            .setName('mini');
+
+        EventBus.on('phaser-jsx-done', this.onEventDone, this);
         EventBus.emit('current-scene-ready', this);
     }
 
@@ -224,20 +232,25 @@ export class Game extends Scene
             case 'Afternoon Delight':
             case 'Dinner at Grandma\'s':
             case 'End':
+                this.dependencies = 1;
                 this.displayMessage(this.idx);
                 break;
             case 'School':
+                this.dependencies = 1;
                 this.displayGlow('School', this.runStateMachine);
                 break;
             case 'Meet Friend':
+                this.dependencies = 2;
                 this.displayGlow('Market');
                 this.displayMessage(this.idx);
                 break;
             case 'Baking Session':
+                this.dependencies = 2;
                 this.displayGlow('Home');
                 this.displayMessage(this.idx);
                 break;
             case 'See Grandma':
+                this.dependencies = 2;
                 this.displayGlow('Grandma');
                 this.displayMessage(this.idx);
                 break;
@@ -245,7 +258,9 @@ export class Game extends Scene
                 console.log('Unexpected');
                 break;
         }
-        this.idx = Math.min(this.idx + 1, states.length - 1);
+        this.idx++;
+        if (this.idx == states.length)
+            EventBus.removeListener('phaser-jsx-done');
     }
 
     changeScene ()
@@ -263,7 +278,7 @@ export class Game extends Scene
         EventBus.emit('show-dialog', this, dialogProp);
     }
 
-    displayGlow(objName, runNextState)
+    displayGlow(objName)
     {
         let glow;
         this.objLayer.objects.forEach((e) => {
@@ -288,7 +303,16 @@ export class Game extends Scene
         glow.body.setImmovable(true);
         this.physics.add.collider(this.player, glow, () => {
             glow.destroy();
-            runNextState && this.runStateMachine();
+            this.onEventDone();
         });
+    }
+
+    onEventDone()
+    {
+        this.dependencies--;
+        console.log(this.dependencies);
+        console.log(typeof this.runStateMachine);
+        if (!this.dependencies)
+            this.runStateMachine();
     }
 }

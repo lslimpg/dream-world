@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { flexbox } from "@mui/system";
 import Card from '@mui/material/Card';
 import Button from '@mui/material/Button';
 import Message from "../Message";
-import { ButtonBase, CardContent, Dialog } from "@mui/material";
+import { ButtonBase, CardContent } from "@mui/material";
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 
 function DialogBox({msgs, width, height, callback}) {
@@ -28,7 +28,11 @@ function DialogBox({msgs, width, height, callback}) {
                 <CardContent sx={{ height: '75%', overflowY :'scroll', display: "flex",
                     flexGrow:'1', flexDirection:'column'}}>
                 <Message key={msgIdx} msg={msgs[msgIdx]} delay={5} callback={() => {setShowCursor(true)}}></Message>
-                {isLast && showCursor && <Button sx={{alignSelf: 'flex-end'}} onClick={() => {setMsgIdx(0); callback()}}>Ok</Button>}
+                {isLast && showCursor && <Button sx={{alignSelf: 'flex-end'}} onClick={() => {
+                    setMsgIdx(0);
+                    setShowCursor(false);
+                    callback();
+                    }}>Ok</Button>}
                 {!isLast && showCursor && <ButtonBase sx={{alignSelf: 'flex-end'}} onClick = {() => {
                     setShowCursor(false);
                     setIsLast((msgIdx+1) === (numMsgs - 1));
