@@ -11,13 +11,11 @@ export class MainMenu extends Scene {
   create() {
     this.add.image(512, 384, 'background');
 
-    this.logo = this.add.image(512, 300, 'logo').setDepth(100);
-
     this.add
-      .text(512, 460, 'Main Menu', {
-        fontFamily: 'Arial Black',
-        fontSize: 38,
-        color: '#ffffff',
+      .text(512, 200, 'Dream World', {
+        fontFamily: 'Georgia Black',
+        fontSize: 100,
+        color: '#ffff00',
         stroke: '#000000',
         strokeThickness: 8,
         align: 'center',

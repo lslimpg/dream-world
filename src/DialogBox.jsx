@@ -17,12 +17,11 @@ function DialogBox({ msgs, width, height, callback }) {
       sx={{
         backgroundImage: "url('../assets/dialog_box.png')",
         backgroundSize: '100% 100%',
-        border: '1px solid red',
         padding: '2%',
         position: 'absolute',
-        transform: 'translateX(-28%)',
-        left: '28%',
-        bottom: '10%',
+        transform: 'translateX(-50%)',
+        left: '50%',
+        bottom: '0px',
         height: `${Math.ceil(height / 4)}px`,
         width: `${width / 1.5}px`,
       }}

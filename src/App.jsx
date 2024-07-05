@@ -6,31 +6,29 @@ import { PhaserGame } from './game/PhaserGame';
 function App() {
   //  References to the PhaserGame component (game and scene are exposed)
   const phaserRef = useRef();
+  const [showButton, setShowButton] = useState(false);
 
   const changeScene = () => {
     const scene = phaserRef.current.scene;
 
     if (scene) {
-      console.log(typeof scene);
       scene.changeScene();
     }
   };
 
   // Event emitted from the PhaserGame component
   const onSceneEvent = scene => {
-    console.log(scene.scene.key === 'Game');
+    setShowButton(scene.scene.key === 'MainMenu');
   };
 
   return (
     <div id="app">
       <PhaserGame ref={phaserRef} currentActiveScene={onSceneEvent} />
-      <div>
-        <div>
-          <button className="button" onClick={changeScene}>
-            Change Scene
-          </button>
-        </div>
-      </div>
+      {showButton && (
+        <button className="button" onClick={changeScene}>
+          Start Game
+        </button>
+      )}
     </div>
   );
 }
