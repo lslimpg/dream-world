@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { flexbox } from '@mui/system';
 import Card from '@mui/material/Card';
 import Button from '@mui/material/Button';
-import Message from '../Message';
+import Message from './Message';
 import { ButtonBase, CardContent } from '@mui/material';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 

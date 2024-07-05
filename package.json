@@ -1,19 +1,19 @@
 {
-  "name": "template-react",
-  "description": "A Phaser 3 project template that demonstrates React communication and uses Vite for bundling.",
-  "version": "1.0.2",
+  "name": "dream-world",
+  "description": "Simple pixel-art style visual novel built with Phaser 3 and React",
+  "version": "1.0.0",
   "type": "module",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/phaserjs/template-react.git"
+    "url": "git+https://github.com/lslimpg/dream-world.git"
   },
-  "author": "Phaser Studio <support@phaser.io> (https://phaser.io/)",
+  "author": "Li-Sha Lim",
   "license": "MIT",
   "licenseUrl": "http://www.opensource.org/licenses/mit-license.php",
   "bugs": {
-    "url": "https://github.com/phaserjs/template-react/issues"
+    "url": "https://github.com/lslimpg/dream-world/issues"
   },
-  "homepage": "https://github.com/phaserjs/template-react#readme",
+  "homepage": "https://github.com/lslimpg/dream-world#readme",
   "keywords": [
     "phaser",
     "phaser3",
