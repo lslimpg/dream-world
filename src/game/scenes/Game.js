@@ -89,9 +89,13 @@ const states = [
   },
 ];
 
-function pickWidthHeight(obj) {
-  let { width, height } = obj;
-  return { width, height };
+function configDialogSize(canvas) {
+  let parent = canvas.parentElement;
+  let { width, height, "margin-top": bottomOffset } = canvas.style || canvas;
+  width = parseInt(width);
+  height = parseInt(height);
+  bottomOffset = parent.clientHeight - height - parseInt(bottomOffset);
+  return { width, height, bottomOffset };
 }
 
 export class Game extends Scene {
@@ -232,11 +236,11 @@ export class Game extends Scene {
       this.map.heightInPixels
     );
 
-    this.dialogConfig = pickWidthHeight(this.game.config);
+    this.dialogConfig = configDialogSize(this.game.canvas);
 
     this.minimap = this.cameras
-      .add(this.dialogConfig.width - 200, 0, 400, 400)
-      .setOrigin(0, 0)
+      .add()
+      .setOrigin(0.9, 0)
       .setZoom(0.1)
       .setName('mini');
 
@@ -318,6 +322,7 @@ export class Game extends Scene {
       msgs: states[idx].msgs,
       width: this.dialogConfig.width,
       height: this.dialogConfig.height,
+      bottomOffset: this.dialogConfig.bottomOffset,
     };
     EventBus.emit('show-dialog', this, dialogProp);
   }
@@ -352,8 +357,6 @@ export class Game extends Scene {
 
   onEventDone() {
     this.dependencies--;
-    console.log(this.dependencies);
-    console.log(typeof this.runStateMachine);
     if (!this.dependencies) this.runStateMachine();
   }
 }

@@ -6,7 +6,7 @@ import Message from './Message';
 import { ButtonBase, CardContent } from '@mui/material';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 
-function DialogBox({ msgs, width, height, callback }) {
+function DialogBox({ msgs, width, height, bottomOffset, callback }) {
   const numMsgs = msgs.length;
   const [msgIdx, setMsgIdx] = useState(0);
   const [isLast, setIsLast] = useState(numMsgs == 1);
@@ -21,7 +21,7 @@ function DialogBox({ msgs, width, height, callback }) {
         position: 'absolute',
         transform: 'translateX(-50%)',
         left: '50%',
-        bottom: '0px',
+        bottom: `${bottomOffset}px`,
         height: `${Math.ceil(height / 4)}px`,
         width: `${width / 1.5}px`,
       }}
