@@ -11,7 +11,7 @@ function Message({msg, delay, callback}) {
                 setText(text + msg[idx]);
                 setIdx(idx + 1);
             } else {
-                console.log('end');
+                // console.log('end');
                 callback();
             }
         }, delay);

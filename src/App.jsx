@@ -13,6 +13,7 @@ function App() {
 
     if (scene) {
       scene.changeScene();
+      setShowButton(false);
     }
   };
 

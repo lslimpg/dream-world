@@ -15,6 +15,7 @@ The motivation behind this is to solidify Javascript, as well as React concepts 
 - [Vite](https://vitejs.dev/)
 - [Tiled](https://www.mapeditor.org/)
 - [LimeZu's awesome Modern Exterior Tileset!](https://limezu.itch.io/modernexteriors)
+- [DialogBox art by Gabriel](https://opengameart.org/content/10-basic-message-boxes)
 
 Starter template from Phaser:
 - [Phaser3 Template](https://github.com/phaserjs/template-react)

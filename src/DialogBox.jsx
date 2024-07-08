@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { flexbox } from '@mui/system';
 import Card from '@mui/material/Card';
 import Button from '@mui/material/Button';
 import Message from './Message';
@@ -38,7 +37,7 @@ function DialogBox({ msgs, width, height, bottomOffset, callback }) {
         <Message
           key={msgIdx}
           msg={msgs[msgIdx]}
-          delay={25}
+          delay={50}
           callback={() => {
             setShowCursor(true);
           }}

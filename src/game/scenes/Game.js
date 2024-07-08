@@ -154,15 +154,19 @@ export class Game extends Scene {
       schoolTiles,
     ]);
     const skyLayer = this.map.createLayer('Sky objects', [
+      terrainTiles,
       campTiles,
       buildingTiles,
       storeTiles,
       shopTiles,
     ]);
 
-    // floorLayer.setCollisionByProperty({collides: true});
     floorDecoLayer.setCollisionByProperty({ collides: true });
     buildingLayer.setCollisionByProperty({ collides: true });
+
+    // Set a depth in order for the sky layer to be above
+    // player
+    skyLayer.setDepth(10);
 
     this.objLayer = this.map.getObjectLayer('Obj Layer');
 
@@ -220,6 +224,8 @@ export class Game extends Scene {
 
     this.cursors = this.input.keyboard.createCursorKeys();
 
+    this.cameras.main.setZoom(0.6).zoomTo(1, 8000, 'Back', true, this.onCameraZoom);
+
     // Constrain the camera so that it isn't allowed to move outside the width/height of tilemap
     this.cameras.main.startFollow(this.player);
     this.cameras.main.setBounds(
@@ -245,11 +251,10 @@ export class Game extends Scene {
       .setName('mini');
 
     EventBus.on('phaser-jsx-done', this.onEventDone, this);
-    EventBus.emit('current-scene-ready', this);
   }
 
   update() {
-    const speed = 100;
+    const speed = 200;
     this.player.setVelocity(0);
 
     if (this.cursors.left.isDown) {
@@ -277,7 +282,7 @@ export class Game extends Scene {
   }
 
   runStateMachine() {
-    console.log(`SM idx: ${this.idx}`);
+    // console.log(`SM idx: ${this.idx}`);
     switch (states[this.idx].key) {
       case 'Intro':
       case 'Afternoon Delight':
@@ -313,9 +318,14 @@ export class Game extends Scene {
     if (this.idx == states.length) EventBus.removeListener('phaser-jsx-done');
   }
 
-  changeScene() {
-    this.scene.start('GameOver');
+  onCameraZoom(camera, complete) {
+    if (complete === 1)
+      EventBus.emit('current-scene-ready', this);
   }
+
+  // changeScene() {
+  //   this.scene.start('GameOver');
+  // }
 
   displayMessage(idx) {
     let dialogProp = {
@@ -331,9 +341,7 @@ export class Game extends Scene {
     let glow;
     this.objLayer.objects.forEach(e => {
       if (e.name === objName) {
-        // console.log(e.polygon);
         const points = e.polygon.map(({ x, y }) => [x, y]).flat();
-        // console.log(points);
         glow = this.add.polygon(e.x, e.y, points).setOrigin(0, 0);
         glow.setStrokeStyle(4, 0xefc53f);
         glow.postFX.addGlow(0xffff00, 8, 0, true, 0.05, 24);
