@@ -11,7 +11,7 @@ import { EventBus } from './EventBus';
 import DialogBox from '../DialogBox';
 
 export const PhaserGame = forwardRef(function PhaserGame(
-  { currentActiveScene },
+  { currentActiveScene},
   ref
 ) {
   const game = useRef();
@@ -45,30 +45,16 @@ export const PhaserGame = forwardRef(function PhaserGame(
       ref.current.scene = currentScene;
       if (currentScene.scene.key === 'Game') EventBus.emit('phaser-jsx-done');
     });
-    EventBus.on('show-dialog', (currentScene, props) => {
-      console.log(props);
-      props = {
-        ...props,
-        callback: () => {
-          setShowDialog(false);
-          EventBus.emit('phaser-jsx-done');
-        },
-      };
-      setDialogContent(props);
-      setShowDialog(true);
-    });
-
     return () => {
       console.log('exit..');
       EventBus.removeListener('current-scene-ready');
-      EventBus.removeListener('show-dialog');
     };
   }, [currentActiveScene, ref]);
 
   return (
     <>
       <div id="game-container">
-        {showDialog && <DialogBox {...dialogContent}></DialogBox>}
+        {/* {showDialog && <DialogBox {...dialogContent}></DialogBox>} */}
       </div>
     </>
   );

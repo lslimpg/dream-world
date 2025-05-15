@@ -166,7 +166,7 @@ export class Game extends Scene {
 
     // Set a depth in order for the sky layer to be above
     // player
-    skyLayer.setDepth(10);
+    skyLayer.setDepth(1);
 
     this.objLayer = this.map.getObjectLayer('Obj Layer');
 
@@ -223,8 +223,9 @@ export class Game extends Scene {
     });
 
     this.cursors = this.input.keyboard.createCursorKeys();
+    this.keys = this.input.keyboard.addKeys('W,S,A,D');
 
-    this.cameras.main.setZoom(0.6).zoomTo(1, 8000, 'Back', true, this.onCameraZoom);
+    this.cameras.main.setZoom(0.6).zoomTo(1, 1000, 'Back', true, this.onCameraZoom);
 
     // Constrain the camera so that it isn't allowed to move outside the width/height of tilemap
     this.cameras.main.startFollow(this.player);
@@ -254,19 +255,19 @@ export class Game extends Scene {
   }
 
   update() {
-    const speed = 200;
+    const speed = 100;
     this.player.setVelocity(0);
 
-    if (this.cursors.left.isDown) {
+    if (this.keys.A.isDown || this.cursors.left.isDown) {
       this.player.setVelocityX(-speed);
       this.player.anims.play('walk_left', true);
-    } else if (this.cursors.right.isDown) {
+    } else if (this.keys.D.isDown || this.cursors.right.isDown) {
       this.player.setVelocityX(speed);
       this.player.anims.play('walk_right', true);
-    } else if (this.cursors.up.isDown) {
+    } else if (this.keys.W.isDown || this.cursors.up.isDown) {
       this.player.setVelocityY(-speed);
       this.player.anims.play('walk_up', true);
-    } else if (this.cursors.down.isDown) {
+    } else if (this.keys.S.isDown || this.cursors.down.isDown) {
       this.player.setVelocityY(speed);
       this.player.anims.play('walk_down', true);
     }
@@ -274,7 +275,11 @@ export class Game extends Scene {
       this.cursors.left.isUp &&
       this.cursors.right.isUp &&
       this.cursors.up.isUp &&
-      this.cursors.down.isUp
+      this.cursors.down.isUp &&
+      this.keys.W.isUp &&
+      this.keys.A.isUp &&
+      this.keys.S.isUp &&
+      this.keys.D.isUp
     ) {
       this.player.setVelocity(0);
       this.player.anims.stop();
@@ -365,6 +370,7 @@ export class Game extends Scene {
 
   onEventDone() {
     this.dependencies--;
+    console.log(`dependencies: ${this.dependencies}`);
     if (!this.dependencies) this.runStateMachine();
   }
 }

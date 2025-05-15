@@ -1,75 +1,70 @@
-import { useState } from 'react';
-import Card from '@mui/material/Card';
-import Button from '@mui/material/Button';
-import Message from './Message';
-import { ButtonBase, CardContent } from '@mui/material';
-import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+import React, { useEffect, useState, useRef } from 'react';
 
-function DialogBox({ msgs, width, height, bottomOffset, callback }) {
-  const numMsgs = msgs.length;
-  const [msgIdx, setMsgIdx] = useState(0);
-  const [isLast, setIsLast] = useState(numMsgs == 1);
-  const [showCursor, setShowCursor] = useState(false);
+const DialogBox = ({ messages = [], onComplete }) => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [displayedText, setDisplayedText] = useState('');
+  const [isTyping, setIsTyping] = useState(true);
+  const typingInterval = useRef(null);
+
+  const currentMessage = messages[currentIndex];
+
+  // Typewriter effect
+  useEffect(() => {
+    if (!currentMessage) return;
+
+    setDisplayedText('');
+    setIsTyping(true);
+
+    let i = 0;
+    clearInterval(typingInterval.current);
+    typingInterval.current = setInterval(() => {
+      i++;
+      setDisplayedText(currentMessage.slice(0, i));
+      // setDisplayedText((prev) => prev + currentMessage[i]);
+      // i++;
+      if (i >= currentMessage.length) {
+        clearInterval(typingInterval.current);
+        setIsTyping(false);
+      }
+    }, 30); // speed
+
+    return () => clearInterval(typingInterval.current);
+  }, [currentMessage]);
+
+  // Fast-forward or next message
+  const handleAdvance = () => {
+    if (isTyping) {
+      clearInterval(typingInterval.current);
+      setDisplayedText(currentMessage);
+      setIsTyping(false);
+    } else {
+      if (currentIndex < Math.max(0, messages.length - 1)) {
+        setCurrentIndex((prev) => prev + 1);
+      } else {
+        onComplete();
+      }
+    }
+  };
+
+  // Enter key listener
+  useEffect(() => {
+    const handler = (e) => {
+      if (e.key === 'Enter') {
+        handleAdvance();
+      }
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  });
+
+  if (!currentMessage) return null;
 
   return (
-    <Card
-      sx={{
-        backgroundImage: "url('../assets/dialog_box.png')",
-        backgroundSize: '100% 100%',
-        padding: '2%',
-        position: 'absolute',
-        transform: 'translateX(-50%)',
-        left: '50%',
-        bottom: `${bottomOffset}px`,
-        height: `${Math.ceil(height / 4)}px`,
-        width: `${width / 1.5}px`,
-      }}
-    >
-      <CardContent
-        sx={{
-          height: '75%',
-          overflowY: 'scroll',
-          display: 'flex',
-          flexGrow: '1',
-          flexDirection: 'column',
-        }}
-      >
-        <Message
-          key={msgIdx}
-          msg={msgs[msgIdx]}
-          delay={50}
-          callback={() => {
-            setShowCursor(true);
-          }}
-        ></Message>
-        {isLast && showCursor && (
-          <Button
-            sx={{ alignSelf: 'flex-end' }}
-            onClick={() => {
-              setMsgIdx(0);
-              setShowCursor(false);
-              callback();
-            }}
-          >
-            Ok
-          </Button>
-        )}
-        {!isLast && showCursor && (
-          <ButtonBase
-            sx={{ alignSelf: 'flex-end' }}
-            onClick={() => {
-              setShowCursor(false);
-              setIsLast(msgIdx + 1 === numMsgs - 1);
-              setMsgIdx(msgIdx + 1);
-            }}
-          >
-            {' '}
-            {<NavigateNextIcon fontSize="large"></NavigateNextIcon>}
-          </ButtonBase>
-        )}
-      </CardContent>
-    </Card>
+    <div className="dialog-box" onClick={handleAdvance}>
+      <p>{displayedText}</p>
+      {!isTyping && <button className="next-button">Next</button>}
+    </div>
   );
-}
+};
 
 export default DialogBox;
