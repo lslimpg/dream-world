@@ -8,7 +8,6 @@ import {
 } from 'react';
 import StartGame from './main';
 import { EventBus } from './EventBus';
-import DialogBox from '../DialogBox';
 
 export const PhaserGame = forwardRef(function PhaserGame(
   { currentActiveScene },
@@ -54,7 +53,6 @@ export const PhaserGame = forwardRef(function PhaserGame(
   return (
     <>
       <div id="game-container">
-        {/* {showDialog && <DialogBox {...dialogContent}></DialogBox>} */}
       </div>
     </>
   );
