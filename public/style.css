@@ -7,42 +7,14 @@ body {
 }
 
 #app {
-  width: 80vw;
-  height: 80vh;
+  width: 1024px;
+  height: 720px;
   overflow: hidden;
   display: flex;
   position: relative;
   justify-content: center;
   align-items: center;
 }
-
-/* #game-container {
-  max-width: 1024px;
-  max-height: 720px;
-  position: relative;
-  justify-content: center;
-} */
-
-/* ::-webkit-scrollbar {
-  width: 10px;
-}
-
-::-webkit-scrollbar-track {
-  background: #a19e9e;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #272626;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #6E6E6E;
-} */
-
-/* .spritePosition {
-  margin: 10px 0 0 10px;
-  font-size: 0.8em;
-} */
 
 .button {
   width: 140px;

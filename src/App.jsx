@@ -39,7 +39,7 @@ function App() {
   };
 
   return (
-    <div id="app" style={{ position: 'relative', margin: '0 auto'}}>
+    <div id="app" style={{ overflow: 'hidden', margin: '0 auto'}}>
       <PhaserGame ref={phaserRef} currentActiveScene={onSceneEvent} />
       <DialogBox messages={dialogMessages} onComplete={closeDialog} />
       {showButton && (

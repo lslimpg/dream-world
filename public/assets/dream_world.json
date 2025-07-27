@@ -179,7 +179,7 @@
          "name":"Ground Objects",
          "opacity":1,
          "type":"tilelayer",
-         "visible":true,
+         "visible":false,
          "width":60,
          "x":0,
          "y":0
@@ -323,6 +323,34 @@
                 {
                  "height":0,
                  "id":14,
+                 "name":"Cafe",
+                 "polygon":[
+                        {
+                         "x":-257.333333333333,
+                         "y":-14
+                        }, 
+                        {
+                         "x":-257.666666666667,
+                         "y":86.916666666667
+                        }, 
+                        {
+                         "x":-205.204545454545,
+                         "y":86.8333333333339
+                        }, 
+                        {
+                         "x":-204.583333333333,
+                         "y":-14
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":1462.25,
+                 "y":1981
+                }, 
+                {
+                 "height":0,
+                 "id":30,
                  "name":"Market",
                  "polygon":[
                         {
@@ -358,22 +386,22 @@
                          "y":0
                         }, 
                         {
-                         "x":-0.169630520666925,
+                         "x":-0.169631,
                          "y":75.9565
                         }, 
                         {
-                         "x":49.769428716283,
+                         "x":49.7694,
                          "y":75.9565
                         }, 
                         {
-                         "x":49.9390654793331,
+                         "x":49.9391,
                          "y":0
                         }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
                  "width":0,
-                 "x":151.810934520667,
+                 "x":151.811,
                  "y":1344
                 }, 
                 {
@@ -502,10 +530,10 @@
          "y":0
         }],
  "nextlayerid":8,
- "nextobjectid":23,
+ "nextobjectid":31,
  "orientation":"orthogonal",
  "renderorder":"right-down",
- "tiledversion":"1.11.0",
+ "tiledversion":"1.11.1-99-gec89c545",
  "tileheight":32,
  "tilesets":[
         {

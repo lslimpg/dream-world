@@ -11,7 +11,7 @@ import { EventBus } from './EventBus';
 import DialogBox from '../DialogBox';
 
 export const PhaserGame = forwardRef(function PhaserGame(
-  { currentActiveScene},
+  { currentActiveScene },
   ref
 ) {
   const game = useRef();

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="60" height="80" tilewidth="32" tileheight="32" infinite="0" nextlayerid="8" nextobjectid="23">
+<map version="1.10" tiledversion="1.11.1-99-gec89c545" orientation="orthogonal" renderorder="right-down" width="60" height="80" tilewidth="32" tileheight="32" infinite="0" nextlayerid="8" nextobjectid="31">
  <editorsettings>
   <export target="dream_world.json" format="json"/>
  </editorsettings>
@@ -91482,7 +91482,7 @@
 66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,119,88,90,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66
 </data>
  </layer>
- <layer id="2" name="Ground Objects" width="60" height="80">
+ <layer id="2" name="Ground Objects" width="60" height="80" visible="0">
   <data encoding="csv">
 0,4841,4842,4844,4845,4846,4847,4848,4849,4850,4851,4844,4845,4846,4847,4848,4849,4850,4851,4844,4845,4846,4847,4848,4849,4850,4851,4844,4845,4846,4847,4848,4849,4850,4851,4844,4845,4846,4847,4848,4849,4850,4851,4849,4850,4851,4844,4845,4846,4847,4848,4849,4850,4851,4853,0,0,0,0,0,
 4872,4873,4874,4876,4877,4878,4879,4880,4881,4882,4883,4876,4877,4878,4879,4880,4881,4882,4883,4876,4877,4878,4879,4880,4881,4882,4883,4876,4877,4878,4879,4880,4881,4882,4883,4876,4877,4878,4879,4880,4881,4882,4883,4881,4882,4883,4876,4877,4878,4879,4880,4881,4882,4883,4885,4886,0,0,0,0,
@@ -91657,7 +91657,10 @@
   <object id="13" name="School" x="1152" y="864">
    <polygon points="-10.5,0.5 -10.5,96.5 41,97 41,1"/>
   </object>
-  <object id="14" name="Market" x="1462.25" y="1981">
+  <object id="14" name="Cafe" x="1462.25" y="1981">
+   <polygon points="-257.333,-14 -257.667,86.9167 -205.205,86.8333 -204.583,-14"/>
+  </object>
+  <object id="30" name="Market" x="1462.25" y="1981">
    <polygon points="0,0 0,78 49.75,78 49.75,0"/>
   </object>
   <object id="21" name="Grandma" x="151.811" y="1344">
