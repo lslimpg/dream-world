@@ -1,6 +1,7 @@
 import { Game } from './scenes/Game';
 import { GameOver } from './scenes/GameOver';
 import { MainMenu } from './scenes/MainMenu';
+import { Diner } from './scenes/Diner';
 import Phaser from 'phaser';
 import { Preloader } from './scenes/Preloader';
 
@@ -24,7 +25,7 @@ const config = {
       debug: false,
     },
   },
-  scene: [Preloader, MainMenu, Game, GameOver],
+  scene: [Preloader, MainMenu, Game, Diner, GameOver],
 };
 
 const StartGame = parent => {

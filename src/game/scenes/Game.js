@@ -5,88 +5,14 @@ const states = [
   {
     key: 'Intro',
     msgs: [
-      `Jamie woke up early on a Saturday morning, and it's still quiet outside.
-            The overcast skies further accentuated that stillness and calm, and she
-            laid in bed for a few more minutes, fully appreciating the fact she need
-            not rush to be anywhere today, and that if she so wished, be alone with her
-            thoughts.
-            She proceeded to get dressed, and make herself breakfast, which consisted of
-            coffee, and toast with butter. As she sat, sipping the coffee and savouring
-            the buttered toast, she stared out the window. The sky was just as grey
-            as it was when she had woken. "Wouldn't it be nice if it stays this way?",
-            she thought. It would feel as if time stood still.`,
-      `And so it was, with that thought bringing Jamie deep in reverie, when she  
-            jolted from it, recalling that she had agreed to a late morning tutoring session
-            for a group of her students. Luckily, there's still a good hour to go. She got 
-            dressed and ready to head to the school where she usually teaches.`,
+      `It's a sunny day when Jamie woke up. Fortunately a new worker today at the
+      diner. An airy feeling of hope rose within her, as even though she
+      would have preferred it overcast, she's havin along with the light rays
+      beaming through. Hopefully, she would hit it off with the new worker. It's
+      hard to get help in this neck of the woods.`,
+      `She quickly got dressed and headed out, after some light breakfast.`
     ],
-  },
-  {
-    key: 'School',
-  },
-  {
-    key: 'Afternoon Delight',
-    msgs: [
-      `It was a fruitful two hours of tutoring, particularly because one of Jamie's
-            students finally had a breakthrough with understanding a tricky concept he
-            had been struggling all week with. Jubilant, Jamie looked at her watch. It
-            was only 1 pm. She still had an hour and a half before her planned meetup
-            with Robin.`,
-      `The skies had parted while she was inside, and now, a warm yellow glow suffused
-            the town's landscape, lending a particular carefree mood to the air around it.
-            Feeling light and airy, Jamie decided to while away the time at a brook in the
-            woods, and made the trek there with a flask of hot coffee, a book in hand.`,
-    ],
-  },
-  {
-    key: 'Meet Friend',
-    msgs: [
-      `It's coming to 3.30 in the afternoon. Jamie gathered her belongings and made
-            her way to the town's market, where she and Robin had planned to meet.`,
-    ],
-  },
-  {
-    key: 'Baking Session',
-    msgs: [
-      `After getting the ingredients they needed, Jamie and Robin headed back to
-            Jamie's home. This afternoon, they had planned to bake curry puffs, and a big
-            batch of it to share around.`,
-    ],
-  },
-  {
-    key: 'See Grandma',
-    msgs: [
-      `It was a pleasant baking session. Jamie and Robin took turns preparing the ingredients,
-            chopping the onions, seasoning the meat, and cooking the filling. Then, they sat at 
-            the roundtable chatting and catching up with each other, while kneading the butter dough,
-            and wrapping the filling with it`,
-      `At the end, Jamie's house was full with the aroma of baked curry puffs.`,
-      `Having shared some with Jamie's neighbours, Jamie and Robin got ready to head over
-            to have dinner with Jamie's grannie.`,
-    ],
-  },
-  {
-    key: "Dinner at Grandma's",
-    msgs: [
-      `Jamie's grandma, still sprightly, with an ever present hint of a smile, welcomed them in.
-            "It's fish porridge tonight, dearies!", she said. "But I've made spicy ground chicken for
-            you", she added, as she smiled knowingly at Robin. "Jamie told me you are visiting today,
-            and I know you are just ok with porridge".`,
-      `After dinner, and when the dishes were done, it's close to 9 pm. Jamie, Robin and Grandma 
-            gathered in the living room. It was a chilly evening, and Jamie felt like having stout, so
-            she opened a bottle. Robin and Grandma opted for hot herbal tea. Together, they drank and
-            munched curry puffs, while filling each other up on the town's gossip.`,
-    ],
-  },
-  {
-    key: 'End',
-    msgs: [
-      `It was 10.30 pm. Robin prepared to leave and make her way back to the other side of town. 
-            After bidding goodnight to her grandma, Jamie headed home herself, and as she pulled the bed 
-            covers over, she reflected over the many simple pleasures today, and thought that it was as 
-            perfect as it can be.`,
-    ],
-  },
+  }
 ];
 
 function configDialogSize(canvas) {
@@ -108,7 +34,7 @@ export class Game extends Scene {
   }
 
   create() {
-    this.map = this.make.tilemap({ key: 'tilemap' });
+    this.map = this.make.tilemap({ key: 'town_tilemap' });
     const terrainTiles = this.map.addTilesetImage(
       '1_Terrains_and_Fences_32x32',
       'base_tiles_0'
@@ -175,7 +101,7 @@ export class Game extends Scene {
       obj => obj.name === 'Spawn Point'
     );
 
-    this.player = this.physics.add.sprite(spawnPoint.x, spawnPoint.y, 'walk');
+    this.player = this.physics.add.sprite(spawnPoint.x, spawnPoint.y, 'player');
     this.player.setCollideWorldBounds(true);
     this.physics.add.collider(this.player, floorLayer);
     this.physics.add.collider(this.player, floorDecoLayer);
@@ -183,7 +109,7 @@ export class Game extends Scene {
 
     this.anims.create({
       key: 'walk_down',
-      frames: this.anims.generateFrameNames('walk', {
+      frames: this.anims.generateFrameNames('player', {
         prefix: 'walk_down_',
         start: 1,
         end: 9,
@@ -193,7 +119,7 @@ export class Game extends Scene {
     });
     this.anims.create({
       key: 'walk_left',
-      frames: this.anims.generateFrameNames('walk', {
+      frames: this.anims.generateFrameNames('player', {
         prefix: 'walk_left_',
         start: 1,
         end: 9,
@@ -203,7 +129,7 @@ export class Game extends Scene {
     });
     this.anims.create({
       key: 'walk_right',
-      frames: this.anims.generateFrameNames('walk', {
+      frames: this.anims.generateFrameNames('player', {
         prefix: 'walk_right_',
         start: 1,
         end: 9,
@@ -213,7 +139,7 @@ export class Game extends Scene {
     });
     this.anims.create({
       key: 'walk_up',
-      frames: this.anims.generateFrameNames('walk', {
+      frames: this.anims.generateFrameNames('player', {
         prefix: 'walk_up_',
         start: 1,
         end: 9,
@@ -255,7 +181,7 @@ export class Game extends Scene {
   }
 
   update() {
-    const speed = 100;
+    const speed = 300;
     this.player.setVelocity(0);
 
     if (this.keys.A.isDown || this.cursors.left.isDown) {
@@ -298,7 +224,7 @@ export class Game extends Scene {
         break;
       case 'School':
         this.dependencies = 1;
-        this.displayGlow('School', this.runStateMachine);
+        this.displayGlow('School');
         break;
       case 'Meet Friend':
         this.dependencies = 2;
@@ -324,13 +250,32 @@ export class Game extends Scene {
   }
 
   onCameraZoom(camera, complete) {
-    if (complete === 1)
+    if (complete === 1) {
+      this.enableTint();
       EventBus.emit('current-scene-ready', this);
+    }
   }
 
   // changeScene() {
   //   this.scene.start('GameOver');
   // }
+
+  enableTint() {
+    let diner;
+    this.objLayer.objects.forEach(e => {
+      if (e.name === 'Market') {
+        const points = e.polygon.map(({ x, y }) => [x, y]).flat();
+        diner = this.add.polygon(e.x, e.y, points, 0xDCDCDC, 0.5).setOrigin(0.5, 0);
+      }
+    });
+    this.physics.add.existing(diner);
+    diner.body.setImmovable(true);
+    this.physics.add.collider(this.player, diner, () => {
+      console.log('collided');
+      this.scene.start('diner');
+    });
+  }
+    
 
   displayMessage(idx) {
     let dialogProp = {
