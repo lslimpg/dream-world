@@ -1,5 +1,6 @@
 import { EventBus } from '../EventBus';
 import { Scene } from 'phaser';
+import Player from './Player';
 
 const states = [
   {
@@ -24,9 +25,99 @@ function configDialogSize(canvas) {
   return { width, height, bottomOffset };
 }
 
+function createMap(scene) {
+   scene.map = scene.make.tilemap({ key: 'town_tilemap' });
+    const terrainTiles = scene.map.addTilesetImage(
+      '1_Terrains_and_Fences_32x32',
+      'base_tiles_0'
+    );
+    const campTiles = scene.map.addTilesetImage(
+      '11_Camping_32x32',
+      'base_tiles_5'
+    );
+    const storeTiles = scene.map.addTilesetImage(
+      '5_Floor_Modular_Buildings_32x32',
+      'base_tiles_1'
+    );
+    const buildingTiles = scene.map.addTilesetImage(
+      '7_Villas_32x32',
+      'base_tiles_2'
+    );
+    const schoolTiles = scene.map.addTilesetImage(
+      '13_School_32x32',
+      'base_tiles_6'
+    );
+    const shopTiles = scene.map.addTilesetImage(
+      '9_Shopping_Center_and_Markets_32x32',
+      'base_tiles_3'
+    );
+    const shopCartTiles = scene.map.addTilesetImage(
+      '10_Vehicles_32x32',
+      'base_tiles_4'
+    );
+
+    scene.floorLayer = scene.map.createLayer('Floor', [terrainTiles, campTiles]);
+    scene.floorDecoLayer = scene.map.createLayer('Ground Objects', [
+      terrainTiles,
+      campTiles,
+      schoolTiles,
+      shopCartTiles,
+      buildingTiles,
+    ]);
+    scene.buildingLayer = scene.map.createLayer('Buildings', [
+      storeTiles,
+      shopTiles,
+      campTiles,
+      buildingTiles,
+      schoolTiles,
+    ]);
+    scene.skyLayer = scene.map.createLayer('Sky objects', [
+      terrainTiles,
+      campTiles,
+      buildingTiles,
+      storeTiles,
+      shopTiles,
+    ]);
+
+    scene.floorDecoLayer.setCollisionByProperty({ collides: true });
+    scene.buildingLayer.setCollisionByProperty({ collides: true });
+
+    // Set a depth in order for the sky layer to be above
+    // player
+    scene.skyLayer.setDepth(1);
+}
+
+function onCameraZoom(camera, complete, scene) {
+  if (complete === 1) {
+    scene.enableTint();
+    EventBus.emit('current-scene-ready', scene);
+  }
+}
+
+function setupCamera(scene, player) {
+  scene.cameras.main.setZoom(0.6).zoomTo(1, 1000, 'Back', true, (cam, complete) => onCameraZoom(cam, complete, scene));
+  
+  // Constrain the camera so that it isn't allowed to move outside the width/height of tilemap
+  if (player !== null) {
+    scene.cameras.main.startFollow(player);
+  }
+  scene.cameras.main.setBounds(
+    0,
+    0,
+    scene.map.widthInPixels,
+    scene.map.heightInPixels,
+    true
+  );
+
+  scene.minimap = scene.cameras
+    .add()
+    .setOrigin(0.9, 0)
+    .setZoom(0.1)
+    .setName('mini');
+}
+
 export class Game extends Scene {
   idx = 0;
-  dialogConfig;
   dependencies = 1;
 
   constructor() {
@@ -34,134 +125,15 @@ export class Game extends Scene {
   }
 
   create() {
-    this.map = this.make.tilemap({ key: 'town_tilemap' });
-    const terrainTiles = this.map.addTilesetImage(
-      '1_Terrains_and_Fences_32x32',
-      'base_tiles_0'
-    );
-    const campTiles = this.map.addTilesetImage(
-      '11_Camping_32x32',
-      'base_tiles_5'
-    );
-    const storeTiles = this.map.addTilesetImage(
-      '5_Floor_Modular_Buildings_32x32',
-      'base_tiles_1'
-    );
-    const buildingTiles = this.map.addTilesetImage(
-      '7_Villas_32x32',
-      'base_tiles_2'
-    );
-    const schoolTiles = this.map.addTilesetImage(
-      '13_School_32x32',
-      'base_tiles_6'
-    );
-    const shopTiles = this.map.addTilesetImage(
-      '9_Shopping_Center_and_Markets_32x32',
-      'base_tiles_3'
-    );
-    const shopCartTiles = this.map.addTilesetImage(
-      '10_Vehicles_32x32',
-      'base_tiles_4'
-    );
-
-    const floorLayer = this.map.createLayer('Floor', [terrainTiles, campTiles]);
-    const floorDecoLayer = this.map.createLayer('Ground Objects', [
-      terrainTiles,
-      campTiles,
-      schoolTiles,
-      shopCartTiles,
-      buildingTiles,
-    ]);
-    const buildingLayer = this.map.createLayer('Buildings', [
-      storeTiles,
-      shopTiles,
-      campTiles,
-      buildingTiles,
-      schoolTiles,
-    ]);
-    const skyLayer = this.map.createLayer('Sky objects', [
-      terrainTiles,
-      campTiles,
-      buildingTiles,
-      storeTiles,
-      shopTiles,
-    ]);
-
-    floorDecoLayer.setCollisionByProperty({ collides: true });
-    buildingLayer.setCollisionByProperty({ collides: true });
-
-    // Set a depth in order for the sky layer to be above
-    // player
-    skyLayer.setDepth(1);
+    createMap(this);
 
     this.objLayer = this.map.getObjectLayer('Obj Layer');
 
-    const spawnPoint = this.map.findObject(
-      'Obj Layer',
-      obj => obj.name === 'Spawn Point'
-    );
+    this.player = new Player(this, 'player');
+    this.player.addCollidingLayer(this.floorLayer);
+    this.player.addCollidingLayer(this.floorDecoLayer);
+    this.player.addCollidingLayer(this.buildingLayer);
 
-    this.player = this.physics.add.sprite(spawnPoint.x, spawnPoint.y, 'player');
-    this.player.setCollideWorldBounds(true);
-    this.physics.add.collider(this.player, floorLayer);
-    this.physics.add.collider(this.player, floorDecoLayer);
-    this.physics.add.collider(this.player, buildingLayer);
-
-    this.anims.create({
-      key: 'walk_down',
-      frames: this.anims.generateFrameNames('player', {
-        prefix: 'walk_down_',
-        start: 1,
-        end: 9,
-      }),
-      frameRate: 10,
-      repeat: -1,
-    });
-    this.anims.create({
-      key: 'walk_left',
-      frames: this.anims.generateFrameNames('player', {
-        prefix: 'walk_left_',
-        start: 1,
-        end: 9,
-      }),
-      frameRate: 10,
-      repeat: -1,
-    });
-    this.anims.create({
-      key: 'walk_right',
-      frames: this.anims.generateFrameNames('player', {
-        prefix: 'walk_right_',
-        start: 1,
-        end: 9,
-      }),
-      frameRate: 10,
-      repeat: -1,
-    });
-    this.anims.create({
-      key: 'walk_up',
-      frames: this.anims.generateFrameNames('player', {
-        prefix: 'walk_up_',
-        start: 1,
-        end: 9,
-      }),
-      frameRate: 10,
-      repeat: -1,
-    });
-
-    this.cursors = this.input.keyboard.createCursorKeys();
-    this.keys = this.input.keyboard.addKeys('W,S,A,D');
-
-    this.cameras.main.setZoom(0.6).zoomTo(1, 1000, 'Back', true, this.onCameraZoom);
-
-    // Constrain the camera so that it isn't allowed to move outside the width/height of tilemap
-    this.cameras.main.startFollow(this.player);
-    this.cameras.main.setBounds(
-      0,
-      0,
-      this.map.widthInPixels,
-      this.map.heightInPixels,
-      true
-    );
     this.physics.world.setBounds(
       0,
       0,
@@ -169,51 +141,23 @@ export class Game extends Scene {
       this.map.heightInPixels
     );
 
-    this.dialogConfig = configDialogSize(this.game.canvas);
+    setupCamera(this, this.player);
+  
+    this.cursors = this.input.keyboard.addKeys({
+      up: 'W', down: 'S', left: 'A', right: 'D',
+    });
 
-    this.minimap = this.cameras
-      .add()
-      .setOrigin(0.9, 0)
-      .setZoom(0.1)
-      .setName('mini');
+    this.dialogConfig = configDialogSize(this.game.canvas);
 
     EventBus.on('phaser-jsx-done', this.onEventDone, this);
   }
 
   update() {
-    const speed = 300;
-    this.player.setVelocity(0);
-
-    if (this.keys.A.isDown || this.cursors.left.isDown) {
-      this.player.setVelocityX(-speed);
-      this.player.anims.play('walk_left', true);
-    } else if (this.keys.D.isDown || this.cursors.right.isDown) {
-      this.player.setVelocityX(speed);
-      this.player.anims.play('walk_right', true);
-    } else if (this.keys.W.isDown || this.cursors.up.isDown) {
-      this.player.setVelocityY(-speed);
-      this.player.anims.play('walk_up', true);
-    } else if (this.keys.S.isDown || this.cursors.down.isDown) {
-      this.player.setVelocityY(speed);
-      this.player.anims.play('walk_down', true);
-    }
-    if (
-      this.cursors.left.isUp &&
-      this.cursors.right.isUp &&
-      this.cursors.up.isUp &&
-      this.cursors.down.isUp &&
-      this.keys.W.isUp &&
-      this.keys.A.isUp &&
-      this.keys.S.isUp &&
-      this.keys.D.isUp
-    ) {
-      this.player.setVelocity(0);
-      this.player.anims.stop();
-    }
+    this.player.handleMovement(this.cursors);
   }
 
   runStateMachine() {
-    // console.log(`SM idx: ${this.idx}`);
+    console.log(`SM idx: ${this.idx}`);
     switch (states[this.idx].key) {
       case 'Intro':
       case 'Afternoon Delight':
@@ -249,13 +193,6 @@ export class Game extends Scene {
     if (this.idx == states.length) EventBus.removeListener('phaser-jsx-done');
   }
 
-  onCameraZoom(camera, complete) {
-    if (complete === 1) {
-      this.enableTint();
-      EventBus.emit('current-scene-ready', this);
-    }
-  }
-
   // changeScene() {
   //   this.scene.start('GameOver');
   // }
@@ -263,14 +200,18 @@ export class Game extends Scene {
   enableTint() {
     let diner;
     this.objLayer.objects.forEach(e => {
-      if (e.name === 'Market') {
+      if (e.name === 'Diner') {
         const points = e.polygon.map(({ x, y }) => [x, y]).flat();
-        diner = this.add.polygon(e.x, e.y, points, 0xDCDCDC, 0.5).setOrigin(0.5, 0);
+        diner = this.add.polygon(e.x, e.y, points, 0xDCDCDC, 0.5).setOrigin(0, 0);
       }
     });
     this.physics.add.existing(diner);
     diner.body.setImmovable(true);
-    this.physics.add.collider(this.player, diner, () => {
+    // Set body size to match polygon bounds
+    diner.body.setSize(diner.width, diner.height);
+    diner.body.setOffset(0, 0);
+    console.log('Diner:', diner.body.x, diner.body.y, diner.body.width, diner.body.height);
+    this.physics.add.collider(this.player, diner.body, () => {
       console.log('collided');
       this.scene.start('diner');
     });
@@ -288,6 +229,7 @@ export class Game extends Scene {
   }
 
   displayGlow(objName) {
+    console.log('test');
     let glow;
     this.objLayer.objects.forEach(e => {
       if (e.name === objName) {

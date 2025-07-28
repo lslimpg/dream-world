@@ -179,7 +179,7 @@
          "name":"Ground Objects",
          "opacity":1,
          "type":"tilelayer",
-         "visible":false,
+         "visible":true,
          "width":60,
          "x":0,
          "y":0
@@ -322,34 +322,6 @@
                 }, 
                 {
                  "height":0,
-                 "id":14,
-                 "name":"Cafe",
-                 "polygon":[
-                        {
-                         "x":-257.333333333333,
-                         "y":-14
-                        }, 
-                        {
-                         "x":-257.666666666667,
-                         "y":86.916666666667
-                        }, 
-                        {
-                         "x":-205.204545454545,
-                         "y":86.8333333333339
-                        }, 
-                        {
-                         "x":-204.583333333333,
-                         "y":-14
-                        }],
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":0,
-                 "x":1462.25,
-                 "y":1981
-                }, 
-                {
-                 "height":0,
                  "id":30,
                  "name":"Market",
                  "polygon":[
@@ -431,6 +403,34 @@
                  "width":0,
                  "x":320,
                  "y":256
+                }, 
+                {
+                 "height":0,
+                 "id":42,
+                 "name":"Diner",
+                 "polygon":[
+                        {
+                         "x":0,
+                         "y":0
+                        }, 
+                        {
+                         "x":54.5,
+                         "y":-0.5
+                        }, 
+                        {
+                         "x":54.75,
+                         "y":89.75
+                        }, 
+                        {
+                         "x":-0.25,
+                         "y":89.5
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":1204.75,
+                 "y":1967.5
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -530,7 +530,7 @@
          "y":0
         }],
  "nextlayerid":8,
- "nextobjectid":31,
+ "nextobjectid":43,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.1-99-gec89c545",
